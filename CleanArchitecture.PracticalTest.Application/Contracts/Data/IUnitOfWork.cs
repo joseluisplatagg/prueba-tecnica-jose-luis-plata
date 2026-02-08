@@ -6,5 +6,5 @@ public interface IUnitOfWork : IDisposable
 {
     IBaseRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseDomainModel;
 
-    Task<int> CompleteAsync();
+    Task<int> CompleteAsync(CancellationToken ct);
 }

@@ -16,10 +16,11 @@ try
 
     // Sobreescribe la configuración del archivo appsettings.json con las variables de entorno
     // Esto permite que las configuraciones se puedan modificar sin necesidad de recompilar la aplicación.
-    // builder.Configuration
-    //     .SetBasePath(Directory.GetCurrentDirectory())
-    //     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    //     .AddEnvironmentVariables();
+     builder.Configuration
+         .SetBasePath(Directory.GetCurrentDirectory())
+         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+         .AddEnvironmentVariables();
+
 
     // Inicialización y configuración de Serilog
     Log.Logger = new LoggerConfiguration()
@@ -59,7 +60,6 @@ try
 
     // Registra el middleware global para manejar excepciones no controladas en la aplicación
     builder.Services.AddTransient<IExceptionMapper, DefaultExceptionMapper>();
-    // builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
     #endregion
 
     #region Services Registration
@@ -148,7 +148,7 @@ try
     var context = services.GetRequiredService<ContextDb>();
 
     // Aplica migraciones pendientes a la base de datos
-    //await context.Database.MigrateAsync();
+    await context.Database.MigrateAsync();
 
     // Inicia la aplicación
     app.Run();

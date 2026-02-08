@@ -14,9 +14,11 @@ public static class InfrastructureServiceRegistration
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<ContextDb>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("ContextDb")!)
+            options.UseNpgsql(configuration.GetConnectionString("ContextDb")!,
+            b => b.MigrationsAssembly("CleanArchitecture.PracticalTest.Infrastructure"))
                 .UseSnakeCaseNamingConvention() // Convierte nombres de tablas y columnas a snake_case
                 .EnableSensitiveDataLogging() // Para ver los valores de las consultas en la consola
+                .AddInterceptors(new PaqueteEstatusInterceptor())
         );
 
         // Repositorios, UnitOfWork y QueryStores

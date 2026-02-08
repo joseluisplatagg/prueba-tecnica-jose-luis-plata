@@ -9,6 +9,7 @@ namespace CleanArchitecture.PracticalTest.Infrastructure.Data.Repositories;
 public class BaseRepository<T>(ContextDb dbContext) : IBaseRepository<T> where T : BaseDomainModel
 {
     private readonly ContextDb _dbContext = dbContext;
+    protected readonly DbSet<T> _dbSet = dbContext.Set<T>();
 
     #region Read Methods
     public async Task<IEnumerable<T>> GetAllAsync(

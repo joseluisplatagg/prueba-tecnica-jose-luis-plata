@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../CleanArchitecture.PracticalTest.Domain/CleanArchitecture.PracticalTest.Domain.csproj" />
     <ProjectReference Include="../CleanArchitecture.PracticalTest.Infrastructure/CleanArchitecture.PracticalTest.Infrastructure.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.PracticalTest.Application\CleanArchitecture.PracticalTest.Application.csproj" />
   </ItemGroup>
 
 </Project>

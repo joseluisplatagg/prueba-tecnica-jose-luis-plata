@@ -1,4 +1,7 @@
 using AutoMapper;
+using CleanArchitecture.PracticalTest.Application.DTO.Common;
+using CleanArchitecture.PracticalTest.Application.Features.Paquetes.Commands.CreatePaquete;
+using CleanArchitecture.PracticalTest.Domain.Entities;
 
 
 namespace CleanArchitecture.PracticalTest.Application.Mapper;
@@ -16,20 +19,21 @@ public class MappingProfile : Profile
 
     private void EnumMappingProfile()
     {
-        // Mapeo de enumeraciones a DTOs
-        // CreateMap<Status, StatusDto>().ReverseMap();        
+        // Mapeo de enumeraciones/ catálogos a DTOs
+        CreateMap<Estado, EstadoDTO>();
+        CreateMap<Ruta, RutaDTO>();
     }
 
     private void CommandToDomainMappingProfile()
     {
         // Mapeo de comandos a entidades del dominio
-        // CreateMap<CreateEntityCommand, DomainEntity>();
+        CreateMap<CreatePaqueteCommand, Paquete>();
 
     }
 
     private void DomainToViewModelMappingProfile()
     {
         // Mapeo de entidades del dominio a ViewModels
-        // CreateMap<DomainEntity, DomainViewModel>();
+        CreateMap<Paquete, PaqueteDTO>();
     }
 }

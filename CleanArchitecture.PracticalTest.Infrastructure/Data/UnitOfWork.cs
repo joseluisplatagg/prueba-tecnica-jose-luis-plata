@@ -32,7 +32,7 @@ public class UnitOfWork(ContextDb dbContext) : IUnitOfWork
         return (IBaseRepository<TEntity>)_repositories[type]!;
     }
 
-    public async Task<int> CompleteAsync()
+    public async Task<int> CompleteAsync(CancellationToken ctS)
     {
         using var transaction = await _dbContext.Database.BeginTransactionAsync();
 

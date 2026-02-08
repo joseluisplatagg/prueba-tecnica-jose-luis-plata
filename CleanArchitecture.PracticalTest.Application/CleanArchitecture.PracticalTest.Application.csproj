@@ -23,4 +23,18 @@
     <ProjectReference Include="../CleanArchitecture.PracticalTest.Domain/CleanArchitecture.PracticalTest.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Estados\Commands\CreateEstado\" />
+    <Folder Include="Features\Estados\Commands\UpdateEstado\" />
+    <Folder Include="Features\Estados\Queries\GetAllEstados\" />
+    <Folder Include="Features\Estados\Queries\GetEstadoById\" />
+    <Folder Include="Features\Paquetes\Queries\GetAllPaquetes\" />
+    <Folder Include="Features\Paquetes\Queries\GetPaquetesByEstado\" />
+    <Folder Include="Features\Paquetes\Queries\GetPaquetesByUserId\" />
+    <Folder Include="Features\Rutas\Commands\CreateRuta\" />
+    <Folder Include="Features\Rutas\Commands\UpdateRuta\" />
+    <Folder Include="Features\Rutas\Queries\GetAllRutas\" />
+    <Folder Include="Features\Rutas\Queries\GetRutaById\" />
+  </ItemGroup>
+
 </Project>

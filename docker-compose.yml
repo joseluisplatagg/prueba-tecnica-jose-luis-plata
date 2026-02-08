@@ -2,6 +2,7 @@
 # Solo levanta la base de datos PostgreSQL
 
 services:
+#-------------------------------------------------------------------#
   db:
     image: postgres:14.3
     container_name: packages-db
@@ -12,8 +13,40 @@ services:
       POSTGRES_DB: packages_db
     ports:
       - "5432:5432"
+    networks:
+      - services_net
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
+  #-------------------------------------------------------------------#
+  back_hir_ws:
+    build:
+      context: .
+      dockerfile: ../prueba-tecnica-jose-luis-plata/Dockerfile
+    container_name: back_hir_ws
+    ports: 
+      - "8080:8080"
+    volumes:
+      - shared_data:/shared
+    networks:
+      - services_net
+    environment:
+      - ASPNETCORE_HTTP_PORT=80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__ContextDb=Host=host.docker.internal;Port=5432;Database=packages_db;Username=packages_user;Password=Dev123456!;
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "export", "||" , "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: always
+#-----------------------------------------------------------------------------------#
 volumes:
+  shared_data:
   postgres_data:
+networks:
+  services_net:
+    name: services_net
