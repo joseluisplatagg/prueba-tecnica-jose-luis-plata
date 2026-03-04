@@ -115,7 +115,12 @@ sequenceDiagram
 
 #  4. UnitOfWork .- Permite la atomicidad para mantener varias operaciones en la BD simulando incluso COMMITS, ROLLBACKS
 
-#  4. Result Patter .- Estructura el flujo normal del programa para la estenderización entre la capa de aplicación y de presentación
+#  5. Result Pattern .- Estructura el flujo normal del programa para la estenderización entre la capa de aplicación y de presentación
+
+#  6. Strategy Pattern .- Para el manejo global de excepciones se provee y contemplan los diferentes tipos de excepciones a nivel
+# dominio, aplicación o lógica de negocio
+
+# 7. FactoryPattern.- Para el caso de los errores / excepciones se delega la creación de la plantilla de respuesta de errors a ProblemDetailFactory para que construya esa respuesta
 
 ```
 
@@ -168,16 +173,7 @@ graph TD
 ## 4. Trade-offs y Limitaciones
 [¿Qué dejaste fuera por tiempo? ¿Cómo lo resolverías?]
 ```bash
-#  1. Pruebas .- Termine la estrucutra, arquitectura, diseño y programación pero no realice pruebas funcionales con Postman o alguna herramienta que realice 
-# peticiones a mi servicio backend.
-
-# 2. Validar todas las pruebas unitarias .- Aunque de las pruebas que agregue pasaron la mayoria hubo algunas que me hubiera gustado terminar con apoyo de las
-# herramientas de debug para las pruebas
-
-# 3. Hubo algunas operaciones LINQ que no termine de implementar
-
-# 4. UI .- Aunque no venía en la parte del requrimiento agregar una pequeña interfaz que apoye el registro, actualización y visualizción de paquetes con apoyo
-# de una libreria como React para que el desarrollo se mas ágil y podamos interactuar visualmente con los recursos del api.
+#  1. Paginación .- Se me paso agregar este punto, sé que tengo que utilizar el SpecificationPattern con la interfaz ISpecification
 
 ```
 
@@ -192,4 +188,21 @@ graph TD
 
 # Se define que el uso y dinamica con la BD será code first ya que se necesitaron crear primero las entidades y configurar el DbContext.cs
 
+# Se identificó que las interfaces que se encontraban dentro de la capa de Application deben de ir dentro de Entities para respetar CLEAN
+
+# Para el caso de la configuración técnica (localizer) se tuvo que mover a la capa de infraestructura para seguir respetando CLEAN
+
+# Dentro del wrapper de Excepciones se deben agregar las excepciones que vayan surgiendo, ya se encontraban las DomainException, ValidationException pero quedaba pendiente las NotFoundException
+
 ```
+
+## 6. Mejoras de Docker (Opcional)
+
+| Área                   | Pregunta guía                                   | Optimización                                                                        |
+| ---------------------- | ----------------------------------------------- |-------------------------------------------------------------------------------------|
+| Optimización de imagen | ¿Cómo reducirías el tamaño de la imagen final?  | Con image alpine o chiseled                                                         |
+| Seguridad              | ¿Qué usuario ejecuta el proceso? ¿Es root?      | No para el caso de la imagen chiseled es non-root                                   |
+| Cache de capas         | ¿El orden de COPY aprovecha el cache de Docker? | Si, se debe de cuidar que las etapas que menos sufran cambios vayan hasta arriba    |
+| Health checks          | ¿Cómo sabría Docker si la API está saludable?   | Existe una configuración "healthcheck que realiza esa tarea para reintentar accesos |
+| Ambiente completo      | ¿Cómo levantarías API + BD juntos?              | Dentro del compose se agrega el servicio de la API y setea el depends: db           |
+

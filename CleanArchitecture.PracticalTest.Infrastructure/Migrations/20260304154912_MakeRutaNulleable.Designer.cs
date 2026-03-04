@@ -3,6 +3,7 @@ using System;
 using CleanArchitecture.PracticalTest.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CleanArchitecture.PracticalTest.Infrastructure.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    partial class ContextDbModelSnapshot : ModelSnapshot
+    [Migration("20260304154912_MakeRutaNulleable")]
+    partial class MakeRutaNulleable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,10 +85,10 @@ namespace CleanArchitecture.PracticalTest.Infrastructure.Migrations
 
             modelBuilder.Entity("CleanArchitecture.PracticalTest.Domain.Entities.Estado", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("EstadoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("id");
+                        .HasColumnName("estado_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp")
@@ -101,6 +104,10 @@ namespace CleanArchitecture.PracticalTest.Infrastructure.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("estado_descripcion");
 
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
@@ -113,7 +120,7 @@ namespace CleanArchitecture.PracticalTest.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("updated_by");
 
-                    b.HasKey("Id")
+                    b.HasKey("EstadoId")
                         .HasName("pk_estados");
 
                     b.ToTable("estados", (string)null);
@@ -121,55 +128,61 @@ namespace CleanArchitecture.PracticalTest.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d12a3456-7890-abcd-ef01-234567890abc"),
+                            EstadoId = new Guid("d12a3456-7890-abcd-ef01-234567890abc"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             EstadoDescripcion = "Registrado",
+                            Id = new Guid("5604ea37-b304-475b-a214-d8b37581260c"),
                             IsActive = true,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
-                            Id = new Guid("e23b4567-8901-bcde-f012-345678901bcd"),
+                            EstadoId = new Guid("e23b4567-8901-bcde-f012-345678901bcd"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             EstadoDescripcion = "En Bodega",
+                            Id = new Guid("602e793a-645c-4de9-b656-eb348e18c471"),
                             IsActive = true,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
-                            Id = new Guid("f34c5678-9012-cdef-0123-456789012cde"),
+                            EstadoId = new Guid("f34c5678-9012-cdef-0123-456789012cde"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             EstadoDescripcion = "En Transito",
+                            Id = new Guid("b45dacc7-74ae-42be-8fcb-08c0c7c81337"),
                             IsActive = true,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
-                            Id = new Guid("d12a3456-7890-abcd-ef01-234567890abe"),
+                            EstadoId = new Guid("d12a3456-7890-abcd-ef01-234567890abe"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             EstadoDescripcion = "En Reparto",
+                            Id = new Guid("a24915f5-38d3-4f08-9889-40a776092d6a"),
                             IsActive = true,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
-                            Id = new Guid("e23b4567-8901-bcde-f012-345678901bce"),
+                            EstadoId = new Guid("e23b4567-8901-bcde-f012-345678901bce"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             EstadoDescripcion = "Entregado",
+                            Id = new Guid("8c833b7e-dfcc-428d-8ae2-1094c70c55f7"),
                             IsActive = true,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
-                            Id = new Guid("f34c5678-9012-cdef-0123-456789012cdc"),
+                            EstadoId = new Guid("f34c5678-9012-cdef-0123-456789012cdc"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             EstadoDescripcion = "Devuelto",
+                            Id = new Guid("7c5dddef-711a-4620-bffe-b97d38bb1ad0"),
                             IsActive = true,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
@@ -222,6 +235,10 @@ namespace CleanArchitecture.PracticalTest.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("numero_rastreo");
+
+                    b.Property<Guid>("PaqueteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("paquete_id");
 
                     b.Property<decimal>("Peso")
                         .HasColumnType("numeric")
@@ -288,6 +305,10 @@ namespace CleanArchitecture.PracticalTest.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("origen");
 
+                    b.Property<Guid>("RutaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ruta_id");
+
                     b.Property<decimal>("TiempoEstimado")
                         .HasColumnType("numeric")
                         .HasColumnName("tiempo_estimado");
@@ -308,37 +329,40 @@ namespace CleanArchitecture.PracticalTest.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c67f8901-2345-f012-3456-789012345f01"),
+                            Id = new Guid("282ad3ba-7852-49f1-b80c-f6c60044792a"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             Destino = "Guadalajara",
                             Distancia = 550.5m,
                             IsActive = true,
                             Origen = "Ciudad de México",
+                            RutaId = new Guid("c67f8901-2345-f012-3456-789012345f01"),
                             TiempoEstimado = 6.5m,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
-                            Id = new Guid("a45d6789-0123-def0-1234-567890123def"),
+                            Id = new Guid("ff4ee4ca-e364-4261-ae5f-59d0da0fb9f9"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             Destino = "Nuevo Laredo",
                             Distancia = 220.0m,
                             IsActive = true,
                             Origen = "Monterrey",
+                            RutaId = new Guid("a45d6789-0123-def0-1234-567890123def"),
                             TiempoEstimado = 2.8m,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
-                            Id = new Guid("b56e7890-1234-ef01-2345-678901234ef0"),
+                            Id = new Guid("f6b4c57e-c367-491a-b823-a438f6ee60f4"),
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             Destino = "Mérida",
                             Distancia = 300.2m,
                             IsActive = true,
                             Origen = "Cancún",
+                            RutaId = new Guid("b56e7890-1234-ef01-2345-678901234ef0"),
                             TiempoEstimado = 4.0m,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });

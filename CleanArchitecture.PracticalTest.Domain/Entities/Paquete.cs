@@ -11,7 +11,6 @@ namespace CleanArchitecture.PracticalTest.Domain.Entities
 {
     public class Paquete : BaseDomainModel
     {
-        public Guid PaqueteId { get; set; }
         public string NumeroRastreo { get; set; } = null!;
         public decimal Peso { get; set; }
         public decimal Alto { get; set; }
@@ -21,7 +20,7 @@ namespace CleanArchitecture.PracticalTest.Domain.Entities
         public decimal Distancia { get; set; }
         public Guid EstadoId { get; set; }
         public Estado? EstadoPaquete { get; set; }
-        public Guid RutaId { get; set; }
+        public Guid? RutaId { get; set; }
         public Ruta? RutaSeleccionada { get; set; }
         public List<PaqueteHistorial> Historial { get; set; } = null!;
         public decimal? Costo { get; set; }
@@ -29,6 +28,7 @@ namespace CleanArchitecture.PracticalTest.Domain.Entities
         // 
         private static readonly Dictionary<Guid, List<Guid>> TransicionesPermitidas = new()
         {
+            { CatalogGuids.Registrado, new() { CatalogGuids.EnBodega, CatalogGuids.Devuelto } },
             { CatalogGuids.EnBodega, new() { CatalogGuids.EnTransito, CatalogGuids.Devuelto } },
             { CatalogGuids.EnTransito, new() { CatalogGuids.EnReparto, CatalogGuids.Devuelto } },
             { CatalogGuids.EnReparto, new() { CatalogGuids.Entregado, CatalogGuids.Devuelto } },
@@ -52,8 +52,7 @@ namespace CleanArchitecture.PracticalTest.Domain.Entities
                 throw new DomainException("No se puede modificar un estado Entregado o Devuelto", this.Id, this.EstadoId);
             }
 
-            if (!TransicionesPermitidas.ContainsKey(EstadoId) ||
-                !TransicionesPermitidas[EstadoId].Contains(nuevoEstadoId))
+            if (!TransicionesPermitidas[this.EstadoId].Contains(nuevoEstadoId))
             {
                 throw new DomainException("flujo incorrecto, selecciona otro estado", this.Id, this.EstadoId, nuevoEstadoId);
             }
@@ -78,9 +77,24 @@ namespace CleanArchitecture.PracticalTest.Domain.Entities
             }
 
             ActualizarCostoTotal();
-            this.RutaId = ruta.RutaId;
+            this.RutaId = ruta.Id;
 
             this.ActualizarEstado(CatalogGuids.EnTransito);
+        }
+
+        public void RegistrarNuevoPaquete()
+        {
+            this.EstadoId = CatalogGuids.Registrado;
+            this.Historial = new List<PaqueteHistorial>
+            {
+                new PaqueteHistorial
+                {
+                    EstadoId = CatalogGuids.Registrado,
+                    Motivo = "Registrado",
+                    UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedBy = new Guid()
+                }
+            };
         }
 
         private void ActualizarCostoTotal()

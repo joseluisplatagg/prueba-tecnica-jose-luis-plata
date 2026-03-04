@@ -1,10 +1,15 @@
 using CleanArchitecture.PracticalTest.Application.Contracts.ContextApplication;
 using CleanArchitecture.PracticalTest.Application.Contracts.Data;
+using CleanArchitecture.PracticalTest.Domain.Interfaces;
 using CleanArchitecture.PracticalTest.Infrastructure.Data;
 using CleanArchitecture.PracticalTest.Infrastructure.Data.Repositories;
+using CleanArchitecture.PracticalTest.Infrastructure.Localization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 
 
 namespace CleanArchitecture.PracticalTest.Infrastructure;
@@ -25,7 +30,23 @@ public static class InfrastructureServiceRegistration
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        // Configuración de la internacionalización para los mensajes.
+        services.AddLocalization();
 
+        var supportedCultures = new[]
+        {
+            new CultureInfo("es-MX"),
+            new CultureInfo("en-US")
+        };
+
+        services.Configure<RequestLocalizationOptions>(options =>
+        {
+            options.DefaultRequestCulture = new RequestCulture("es-MX");
+            options.SupportedCultures = supportedCultures;
+            options.SupportedUICultures = supportedCultures;
+        });
+
+        services.AddSingleton<ILocalizer, Localizer>();
 
         return services;
     }

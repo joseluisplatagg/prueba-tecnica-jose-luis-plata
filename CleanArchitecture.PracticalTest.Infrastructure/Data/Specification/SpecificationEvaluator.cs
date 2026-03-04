@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using CleanArchitecture.PracticalTest.Application.Contracts.Data;
 using CleanArchitecture.PracticalTest.Domain.Common;
+using CleanArchitecture.PracticalTest.Domain.Interfaces;
 
 namespace CleanArchitecture.PracticalTest.Infrastructure.Data.Specification;
 

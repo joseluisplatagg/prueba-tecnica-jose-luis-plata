@@ -22,21 +22,7 @@ public static class ApplicationServiceRegistration
         // Agregamos el comportamiento de las validaciones
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-        // Configuración de la internacionalización para los mensajes.
-        services.AddLocalization();
-
-        var supportedCultures = new[]
-        {
-            new CultureInfo("es-MX"),
-            new CultureInfo("en-US")
-        };
-
-        services.Configure<RequestLocalizationOptions>(options =>
-        {
-            options.DefaultRequestCulture = new RequestCulture("es-MX");
-            options.SupportedCultures = supportedCultures;
-            options.SupportedUICultures = supportedCultures;
-        });
+        
 
         return services;
     }

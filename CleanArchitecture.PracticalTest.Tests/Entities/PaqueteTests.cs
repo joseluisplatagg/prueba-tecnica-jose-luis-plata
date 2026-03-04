@@ -35,7 +35,7 @@ namespace CleanArchitecture.PracticalTest.Tests.Entities
             var paquete = new Paquete();
             paquete.RegistrarDimensiones(1m,10m, 10m, 10m);
             paquete.EstadoId = _enBodegaId;
-            var ruta = new Ruta { RutaId = Guid.NewGuid(), Distancia = 100m }; // 100km * 2.5 = 250
+            var ruta = new Ruta { Id = Guid.NewGuid(), Distancia = 100m }; // 100km * 2.5 = 250
 
             // Act
             paquete.AsignarRutas(ruta);
@@ -43,7 +43,7 @@ namespace CleanArchitecture.PracticalTest.Tests.Entities
             // Assert: 50 (base) + 0 (peso) + 250 (distancia) = 300
             paquete.Costo.Should().Be(300m);
             paquete.EstadoId.Should().Be(_enTransitoId);
-            paquete.RutaId.Should().Be(ruta.RutaId);
+            paquete.RutaId.Should().Be(ruta.Id);
         }
 
         [Fact]
@@ -52,8 +52,8 @@ namespace CleanArchitecture.PracticalTest.Tests.Entities
             // Arrange
             var paquete = new Paquete();
             // Simulamos que ya está en tránsito (usando reflexión o un método de carga inicial)
-            typeof(Paquete).GetProperty("EstadoId")!.SetValue(paquete, _enTransitoId);
-            var ruta = new Ruta { RutaId = Guid.NewGuid() };
+            typeof(Paquete).GetProperty("Id")!.SetValue(paquete, _enTransitoId);
+            var ruta = new Ruta { Id = Guid.NewGuid() };
 
             // Act
             Action act = () => paquete.AsignarRutas(ruta);

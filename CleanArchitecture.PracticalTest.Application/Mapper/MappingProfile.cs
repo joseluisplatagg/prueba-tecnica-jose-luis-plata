@@ -1,6 +1,7 @@
 using AutoMapper;
 using CleanArchitecture.PracticalTest.Application.DTO.Common;
 using CleanArchitecture.PracticalTest.Application.Features.Paquetes.Commands.CreatePaquete;
+using CleanArchitecture.PracticalTest.Domain.Common;
 using CleanArchitecture.PracticalTest.Domain.Entities;
 
 

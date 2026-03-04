@@ -1,3 +1,4 @@
+using CleanArchitecture.PracticalTest.Application.Exceptions;
 using CleanArchitecture.PracticalTest.Domain.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ public class DefaultExceptionMapper : IExceptionMapper
         {
             ValidationException ve => ProblemDetailsFactory.Validation(ve, context),
             DomainException de => ProblemDetailsFactory.Domain(de, context),
+            NotFoundException nfe => ProblemDetailsFactory.NotFound(nfe,context),
             _ => ProblemDetailsFactory.Unexpected(exception, context)
         };
     }

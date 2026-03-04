@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.PracticalTest.Domain.Entities;
+﻿using CleanArchitecture.PracticalTest.Domain.Common;
+using CleanArchitecture.PracticalTest.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace CleanArchitecture.PracticalTest.Domain.Interfaces
 {
     public interface IPaqueteRepository : IBaseRepository<Paquete>
     {
-        Task<int> AsignRoute(Guid idPaquete, Guid newEstado, Guid idRuta);
+        public Task<int> AsignRoute(Guid idPaquete, Guid newEstado, Guid idRuta);
 
-        Task<Paquete?> GetPaqueteHistorial(Guid id);
+        public Task<Paquete?> GetPaqueteHistorial(Guid id);
     }
 }

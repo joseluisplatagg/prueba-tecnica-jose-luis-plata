@@ -1,4 +1,7 @@
-﻿using CleanArchitecture.PracticalTest.Application.Contracts.Data;
+﻿using AutoMapper;
+using CleanArchitecture.PracticalTest.Application.Contracts.ContextApplication;
+using CleanArchitecture.PracticalTest.Application.Contracts.Data;
+using CleanArchitecture.PracticalTest.Application.DTO.Common;
 using CleanArchitecture.PracticalTest.Application.Features.Paquetes.Commands.CreatePaquete;
 using CleanArchitecture.PracticalTest.Domain.Entities;
 using FluentValidation;
@@ -13,42 +16,41 @@ namespace CleanArchitecture.PracticalTest.Application.Features.Paquetes.Commands
 {
     public record UpdateEstadoPaqueteCommand(
         Guid PaqueteId,
-        Guid EstadoId) : IRequest<bool>;
+        Guid EstadoId) : IRequest<OperationResult<bool>>;
 
     public class UpdateEstadoPaqueteValidator : AbstractValidator<UpdateEstadoPaqueteCommand>
     {
         public UpdateEstadoPaqueteValidator()
         {
-            RuleFor(p => p.EstadoId).NotEmpty();
+            RuleFor(p => p.PaqueteId).NotEmpty();
             RuleFor(p =>p.EstadoId).NotEmpty();
         }
     }
 
-    public class UpdateEstadoPaqueteHandler : IRequestHandler<UpdateEstadoPaqueteCommand, bool>
+    public class UpdateEstadoPaqueteHandler(IUnitOfWork _unitOfWork, IMapper _mapper, ILocalizer _localizer) : IRequestHandler<UpdateEstadoPaqueteCommand, OperationResult<bool>>
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public UpdateEstadoPaqueteHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
-
-        public async Task<bool> Handle(UpdateEstadoPaqueteCommand command, CancellationToken ct)
+        public async Task<OperationResult<bool>> Handle(UpdateEstadoPaqueteCommand command, CancellationToken ct)
         {
             var paqueteRepo = _unitOfWork.GetRepository<Paquete>();
             var estadoRepo = _unitOfWork.GetRepository<Estado>();
 
             var paquete = await paqueteRepo.GetByIdAsync(command.PaqueteId);
-            if (paquete != null) return false;
+            if (paquete == null) return OperationResult.With(false);
 
             paquete.ActualizarEstado(command.EstadoId);
 
             var estado = estadoRepo.GetByIdAsync(command.EstadoId);
-            if (estado != null) return false;
+            if (estado == null) return OperationResult.With(false, new List<string> { "El estado / estatus no existe" });
 
             paquete.EstadoId = command.EstadoId;
             paqueteRepo.Update(paquete);
 
             var result = await _unitOfWork.CompleteAsync(ct);
 
-            return result > 0;
+            var warning = _localizer.GetResponseMessage("Actualizado");
+
+            return OperationResult.With(result > 0 ? true : false, warnings: new List<string> { warning },
+                metadata: new Dictionary<string, object> { { "Filas afectadas", result } });
         }
     }
 }

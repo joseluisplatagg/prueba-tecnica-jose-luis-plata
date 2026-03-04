@@ -1,4 +1,5 @@
 using CleanArchitecture.PracticalTest.Domain.Common;
+using CleanArchitecture.PracticalTest.Domain.Interfaces;
 
 namespace CleanArchitecture.PracticalTest.Application.Contracts.Data;
 

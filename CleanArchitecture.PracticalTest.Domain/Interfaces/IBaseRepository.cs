@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.PracticalTest.Domain.Common;
+using CleanArchitecture.PracticalTest.Domain.Common;
+using CleanArchitecture.PracticalTest.Application.Contracts.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,9 +54,9 @@ namespace CleanArchitecture.PracticalTest.Domain.Interfaces
         #endregion
 
         #region Specification Methods
-        Task<T?> GetWithSpecAsync(ISpecification<T> spec);
-        Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecification<T> spec);
-        Task<int> CountAsync(ISpecification<T> spec);
+        public Task<T?> GetWithSpecAsync(ISpecification<T> spec);
+        public Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecification<T> spec);
+        public Task<int> CountAsync(ISpecification<T> spec);
         #endregion
     }
 }

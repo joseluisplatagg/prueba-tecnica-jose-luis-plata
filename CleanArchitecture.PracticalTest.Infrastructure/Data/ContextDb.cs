@@ -46,7 +46,7 @@ public class ContextDb(DbContextOptions<ContextDb> options) : DbContext(options)
         modelBuilder.Entity<Ruta>().HasData(
        new Ruta
        {
-           RutaId = CatalogGuids.RutaCentro,
+           Id = CatalogGuids.RutaCentro,
            Origen = "Ciudad de México",
            Destino = "Guadalajara",
            Distancia = 550.5m,
@@ -56,7 +56,7 @@ public class ContextDb(DbContextOptions<ContextDb> options) : DbContext(options)
        },
        new Ruta
        {
-           RutaId = CatalogGuids.RutaNorte,
+           Id = CatalogGuids.RutaNorte,
            Origen = "Monterrey",
            Destino = "Nuevo Laredo",
            Distancia = 220.0m,
@@ -66,7 +66,7 @@ public class ContextDb(DbContextOptions<ContextDb> options) : DbContext(options)
        },
        new Ruta
        {
-           RutaId = CatalogGuids.RutaSur,
+           Id = CatalogGuids.RutaSur,
            Origen = "Cancún",
            Destino = "Mérida",
            Distancia = 300.2m,
@@ -78,16 +78,16 @@ public class ContextDb(DbContextOptions<ContextDb> options) : DbContext(options)
 
         modelBuilder.Entity<Estado>(st =>
         {
-            st.HasKey(e => e.EstadoId);
+            st.HasKey(e => e.Id);
             st.Property(e => e.EstadoDescripcion).IsRequired().HasMaxLength(100);
 
             st.HasData(
-                new Estado { EstadoId = CatalogGuids.Registrado, EstadoDescripcion = "Registrado" },
-                new Estado { EstadoId = CatalogGuids.EnBodega, EstadoDescripcion = "En Bodega" },
-                new Estado { EstadoId = CatalogGuids.EnTransito, EstadoDescripcion = "En Transito" },
-                new Estado { EstadoId = CatalogGuids.EnReparto, EstadoDescripcion = "En Reparto" },
-                new Estado { EstadoId = CatalogGuids.Entregado, EstadoDescripcion = "Entregado" },
-                new Estado { EstadoId = CatalogGuids.Devuelto, EstadoDescripcion = "Devuelto" });
+                new Estado { Id = CatalogGuids.Registrado, EstadoDescripcion = "Registrado" },
+                new Estado { Id = CatalogGuids.EnBodega, EstadoDescripcion = "En Bodega" },
+                new Estado { Id = CatalogGuids.EnTransito, EstadoDescripcion = "En Transito" },
+                new Estado { Id  = CatalogGuids.EnReparto, EstadoDescripcion = "En Reparto" },
+                new Estado { Id = CatalogGuids.Entregado, EstadoDescripcion = "Entregado" },
+                new Estado { Id = CatalogGuids.Devuelto, EstadoDescripcion = "Devuelto" });
         });
 
         modelBuilder.Entity<Paquete>(entity =>
@@ -145,18 +145,8 @@ public class PaqueteEstatusInterceptor : SaveChangesInterceptor
 
         var entries = context.ChangeTracker.Entries<Paquete>()
                 .Where(p => p.State == EntityState.Added ||
-                            (p.State == EntityState.Modified && p.Property(p => p.EstadoPaquete.EstadoId).IsModified));
-
-        foreach( var entry in entries)
-        {
-            context.Set<PaqueteHistorial>().Add(new PaqueteHistorial
-            {
-                PaqueteId = entry.Entity.PaqueteId,
-                PaqueteEstado = entry.Entity.EstadoPaquete,
-                UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                UpdatedBy = new Guid()
-            });
-        }
+                            p.State == EntityState.Modified
+                            && p.Property(x => x.EstadoId).IsModified).ToList();
 
         return base.SavingChangesAsync(eventData, result, ct);
     }

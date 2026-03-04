@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using CleanArchitecture.PracticalTest.Application.Contracts.Data;
 using CleanArchitecture.PracticalTest.Domain.Common;
+using CleanArchitecture.PracticalTest.Domain.Interfaces;
 using CleanArchitecture.PracticalTest.Infrastructure.Data.Specification;
 using Microsoft.EntityFrameworkCore;
 
@@ -206,16 +207,16 @@ public class BaseRepository<T>(ContextDb dbContext) : IBaseRepository<T> where T
 
     #region Specification Methods
 
-    public async Task<T?> GetWithSpecAsync(ISpecification<T> spec) =>
+    public virtual async Task<T?> GetWithSpecAsync(ISpecification<T> spec) =>
         await ApplySpecification(spec).FirstOrDefaultAsync();
 
-    public async Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecification<T> spec) =>
+    public virtual async Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecification<T> spec) =>
         await ApplySpecification(spec).ToListAsync();
 
-    public async Task<int> CountAsync(ISpecification<T> spec) =>
+    public virtual async Task<int> CountAsync(ISpecification<T> spec) =>
         await ApplySpecification(spec).CountAsync();
 
-    public IQueryable<T> ApplySpecification(ISpecification<T> spec) =>
+    public virtual IQueryable<T> ApplySpecification(ISpecification<T> spec) =>
         SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>().AsQueryable(), spec);
 
     #endregion

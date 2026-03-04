@@ -70,6 +70,8 @@ try
     builder.Services.AddApplicationServices();
     #endregion
 
+    builder.Services.AddProblemDetails();
+
     #region Application Pipeline
 
     var app = builder.Build();

@@ -2,8 +2,9 @@
 using CleanArchitecture.PracticalTest.Application.Features.Paquetes.Commands.AsignarRutaPaquete;
 using CleanArchitecture.PracticalTest.Application.Features.Paquetes.Commands.CreatePaquete;
 using CleanArchitecture.PracticalTest.Application.Features.Paquetes.Commands.UpdateEstadoPaquete;
+using CleanArchitecture.PracticalTest.Application.Features.Paquetes.Queries.GetAllPaquetes;
 using CleanArchitecture.PracticalTest.Application.Features.Paquetes.Queries.GetPaqueteById;
-using Microsoft.AspNetCore.Mvc;
+using CleanArchitecture.PracticalTest.Application.Features.Paquetes.Queries.GetShippingCost;
 
 namespace CleanArchitecture.PracticalTest.API.Controllers
 {
@@ -20,18 +21,18 @@ namespace CleanArchitecture.PracticalTest.API.Controllers
         public async Task<ActionResult<APIResponse<bool>>> AddPaqueteAsync([FromBody] CreatePaqueteCommand paquete)
         {
             var res = await _mediator.Send(paquete);
-            return res is null ? BadRequest(APIResponse.From<bool>(OperationResult.With<bool>(false), "No se pudo realizar la actualización")) :
-                                 Ok(APIResponse.From<bool>(OperationResult.With<bool>(true), "Paquete actualizado"));
+            var message = base._localizer.GetResponseMessage("Agregado exitosamente");
+            return Ok(APIResponse.From(res, message));
         }
 
         [HttpPatch]
         [Route("{id:guid}/status")]
-        public async Task<ActionResult<APIResponse<bool>>> UpdateEstadoAsync(Guid PaqueteId, [FromBody] UpdatePackageStatusRequest request)
+        public async Task<ActionResult<APIResponse<bool>>> UpdateEstadoAsync(Guid id, [FromBody] UpdatePackageStatusRequest request)
         {
-            var command = new UpdateEstadoPaqueteCommand(PaqueteId, request.EstadoId);
+            var command = new UpdateEstadoPaqueteCommand(id, request.EstadoId);
             var res = await _mediator.Send(command);
-            return res is false ? BadRequest(APIResponse.From<bool>(OperationResult.With<bool>(false), "No se pudo realizar la actualización de estado")) :
-                                 Ok(APIResponse.From<bool>(OperationResult.With<bool>(true), "Estatus de paquete actulizado"));
+            var message = base._localizer.GetResponseMessage("Actualización Exitosa");
+            return Ok(APIResponse.From(res, message));
         }
 
         [HttpGet]
@@ -39,8 +40,8 @@ namespace CleanArchitecture.PracticalTest.API.Controllers
         public async Task<ActionResult<APIResponse<PaqueteDTO>>> GetPaqueteById(Guid id)
         {
             var pack = await _mediator.Send(new GetPaqueteByIdQuery(id));
-            return pack is null ? BadRequest(APIResponse.From<PaqueteDTO>(pack, "Error al recuperar el paquete")) 
-                : Ok(APIResponse.From<PaqueteDTO>(pack));
+            var message = base._localizer.GetResponseMessage("Busqueda Exitosa");
+            return Ok(APIResponse.From(pack, message));
         }
 
         [HttpPost]
@@ -48,29 +49,26 @@ namespace CleanArchitecture.PracticalTest.API.Controllers
         public async Task<ActionResult<APIResponse<bool>>> AssginRouteAsync(Guid id, [FromBody] Guid RutaId)
         {
             var res = await _mediator.Send(new AsignarRutaPaqueteCommand(id, RutaId));
-            return res is null ? BadRequest(APIResponse.From<bool>(OperationResult.With<bool>(false), "No se pudo realizar la actualización")) :
-                                 Ok(APIResponse.From<bool>(res, "Paquete actualizado"));
+
+            string message = res.Data == true ? base._localizer.GetResponseMessage("Ruta asignada") : base._localizer.GetResponseMessage("Ruta No asignada");
+            return Ok(APIResponse.From(res, message));
         }
 
         [HttpGet]
-        public async Task<ActionResult<APIResponse<PaqueteDTO>>> GetAllPaquetesAsync(Guid id)
+        public async Task<ActionResult<APIResponse<List<PaqueteDTO>>>> GetAllPaquetesAsync()
         {
-            var pack = await _mediator.Send(new GetPaqueteByIdQuery(id));
-            return pack is null ? BadRequest(APIResponse.From<PaqueteDTO>(pack, "Error al recuperar el paquete"))
-                : Ok(APIResponse.From<PaqueteDTO>(pack));
+            var packs = await _mediator.Send(new GetAllPaquetesQuery());
+            var message = base._localizer.GetResponseMessage("Consulta Exitosa");
+            return Ok(APIResponse.From(packs, message));
         }
 
         [HttpGet]
         [Route("{id:guid}/shipping-cost")]
         public async Task<ActionResult<APIResponse<PaqueteDTO>>>  ShippingCostAsync(Guid id)
         {
-            var pack = await _mediator.Send(new GetPaqueteByIdQuery(id));
-            return pack is null ? BadRequest(APIResponse.From<PaqueteDTO>(pack, "Error al recuperar el paquete"))
-                : Ok(APIResponse.From<PaqueteDTO>(pack));
+            var pack = await _mediator.Send(new GetShippingCostQuery(id));
+            var message = base._localizer.GetResponseMessage("Consulta Exitosa");
+            return Ok(APIResponse.From(pack, message));
         }
-
-
-
-
     }
 }

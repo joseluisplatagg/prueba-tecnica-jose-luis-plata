@@ -1,3 +1,4 @@
+using CleanArchitecture.PracticalTest.Application.Exceptions;
 using CleanArchitecture.PracticalTest.Domain.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -51,5 +52,20 @@ public static class ProblemDetailsFactory
             Detail = "An unexpected error occurred. Please try again later.",
             Instance = context.Request.Path
         };
+    }
+
+    public static ProblemDetails NotFound(NotFoundException ex, HttpContext context)
+    {
+        var problem = new ProblemDetails
+        {
+            Title = "Not Found",
+            Status = StatusCodes.Status404NotFound,
+            Type = "https://tools.ietf.org/html/rfc4918#section-11.2",
+            Detail = ex.Message,
+            Instance = context.Request.Path
+        };
+
+        problem.Extensions["errorCode"] = "Package.InvalidStatusTransition";
+        return problem;
     }
 }

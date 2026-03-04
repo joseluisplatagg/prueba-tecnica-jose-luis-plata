@@ -9,7 +9,6 @@ namespace CleanArchitecture.PracticalTest.Domain.Entities
 {
     public class Estado : BaseDomainModel
     {
-        public Guid EstadoId { get; set; }
         public string EstadoDescripcion { get; set; }
     }
 }

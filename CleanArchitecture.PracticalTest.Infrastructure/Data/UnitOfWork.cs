@@ -1,6 +1,7 @@
 using System.Collections;
 using CleanArchitecture.PracticalTest.Application.Contracts.Data;
 using CleanArchitecture.PracticalTest.Domain.Common;
+using CleanArchitecture.PracticalTest.Domain.Interfaces;
 using CleanArchitecture.PracticalTest.Infrastructure.Data.Repositories;
 
 namespace CleanArchitecture.PracticalTest.Infrastructure.Data;

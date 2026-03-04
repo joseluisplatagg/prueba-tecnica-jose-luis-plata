@@ -1,5 +1,8 @@
-﻿using CleanArchitecture.PracticalTest.Application.Contracts.Data;
+﻿using AutoMapper;
+using CleanArchitecture.PracticalTest.Application.Contracts.ContextApplication;
+using CleanArchitecture.PracticalTest.Application.Contracts.Data;
 using CleanArchitecture.PracticalTest.Application.DTO.Common;
+using CleanArchitecture.PracticalTest.Domain.Constants;
 using CleanArchitecture.PracticalTest.Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -7,22 +10,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CleanArchitecture.PracticalTest.Application.Features.Paquetes.Commands.CreatePaquete
 {
     public record CreatePaqueteCommand(
-        Guid PaqueteId,
         string NumeroRastreo,
         decimal Peso,
         decimal Alto,
         decimal Ancho,
         decimal Largo,
         decimal Volumen,
-        decimal Distancia,
-        Guid EstadoId,
-        Guid RutaId,
-        decimal Costo) : IRequest<OperationResult<int>>;
+        decimal Distancia) : IRequest<OperationResult<int>>;
 
     public class CreatePaqueteValidator : AbstractValidator<CreatePaqueteCommand>
     {
@@ -47,39 +47,51 @@ namespace CleanArchitecture.PracticalTest.Application.Features.Paquetes.Commands
             RuleFor(p => p)
                 .Must(p => p.Peso > 0.1m) // Peso mínimo para cualquier dimensión
                 .When(p => p.Alto > 50)
-                .WithMessage("Un paquete de gran tamaño no puede pesar menos de 100g");
-            RuleFor(p =>p.EstadoId).NotEmpty();
-            RuleFor(p =>p.RutaId).NotEmpty();
+                .WithMessage("Un paquete de gran tamaño no puede pesar menos de 100kg");
         }
     }
 
-    public class CreatePaqueteHandler : IRequestHandler<CreatePaqueteCommand , OperationResult<int>>
+    public class CreatePaqueteHandler(
+        IUnitOfWork _unitOfWork, 
+        ILocalizer _localizer,
+        IMapper _mapper) : IRequestHandler<CreatePaqueteCommand , OperationResult<int>>
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public CreatePaqueteHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
         public async Task<OperationResult<int>> Handle(CreatePaqueteCommand command, CancellationToken ct)
         {
+            var paqId = Guid.NewGuid();
             var newPaquete = new Paquete
             {
-                PaqueteId = new Guid(),
+                Id = paqId,
                 NumeroRastreo = command.NumeroRastreo,
                 Peso = command.Peso,
                 Alto = command.Alto,
                 Ancho = command.Ancho,
                 Largo = command.Largo,
                 Volumen = command.Alto * command.Largo * command.Ancho,
-                EstadoId = command.EstadoId,
-                RutaId = command.RutaId,
-                Costo = command.Costo
+                EstadoId = CatalogGuids.Registrado,
+                Historial = new List<Domain.Common.PaqueteHistorial>
+                {
+                    new Domain.Common.PaqueteHistorial
+                    {
+                        EstadoId = CatalogGuids.Registrado,
+                        Motivo = "Registrado",
+                        PaqueteId = paqId,
+                        UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                        UpdatedBy = new Guid()
+                    }
+                }
             };
 
             var paqueteRepo = _unitOfWork.GetRepository<Paquete>();
 
             var result = await paqueteRepo.AddAsync(newPaquete);
-            if (result != null) return OperationResult.With<int>(1);
-            else return OperationResult.With<int>(0);
+            var added = await _unitOfWork.CompleteAsync(ct);
+
+            var warning =  _localizer.GetResponseMessage("Agregado");
+
+            return OperationResult.With(added, warnings: new List<string> { warning },
+                metadata: new Dictionary<string, object> { { "Filas afectadas", added } });
         }
     }
 }

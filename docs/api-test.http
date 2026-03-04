@@ -1,0 +1,57 @@
+@hostname = localhost
+@port = 8080
+@baseUrl = http://{{hostname}}:{{port}}/api/v1
+@contentType = application/json
+
+###
+
+#🟢 1. LISTAR PAQUETES (GET)
+GET {{baseUrl}}/packages
+Accept: {{contentType}}
+
+###
+
+#🔵 2. OBTENER DETALLE POR ID (GET)
+@id = 6c1ad7de-d02d-4b31-bd67-02f07e59cd18
+GET {{baseUrl}}/packages/{{id}}
+Accept: {{contentType}}
+
+###
+
+#🟡 3. CREAR NUEVO PAQUETE (POST)
+POST {{baseUrl}}/packages
+Content-Type: {{contentType}}
+
+{
+    "numeroRastreo": "TRK-2026-MX",
+    "peso": 12.5,
+    "alto": 30.0,
+    "ancho": 20.0,
+    "largo": 15.0,
+    "distancia": 10.2
+}
+
+###
+
+# 🟠 4. SIMULAR COSTO (GET)
+#Calcula el costo dinámico sin persistir en Postgres
+GET {{baseUrl}}/packages/{{id}}/shipping-cost
+Accept: {{contentType}}
+
+###
+
+# 🔴 5. ACTUALIZAR ESTADO (PATCH)
+#Valida la máquina de estados del Dominio
+PATCH {{baseUrl}}/packages/{{id}}/status
+Content-Type: {{contentType}}
+{
+"estadoId": "e23b4567-8901-bcde-f012-345678901bcd"
+}
+
+###
+
+# 🟣 6. ASIGNAR RUTA (POST)
+#Envía el GUID directamente como un string JSON
+POST {{baseUrl}}/packages/{{id}}/assign-route
+Content-Type: {{contentType}}
+"b56e7890-1234-ef01-2345-678901234ef0"
