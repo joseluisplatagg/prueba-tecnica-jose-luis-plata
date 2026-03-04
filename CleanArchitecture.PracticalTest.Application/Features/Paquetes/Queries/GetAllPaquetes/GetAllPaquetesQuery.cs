@@ -31,7 +31,7 @@ namespace CleanArchitecture.PracticalTest.Application.Features.Paquetes.Queries.
 
         public async Task<OperationResult<List<PaqueteDTO>>> Handle(GetAllPaquetesQuery request, CancellationToken cancellationToken)
         {
-            var paquetes = await _unitOfWork.GetRepository<Paquete>().GetAllWithSpecAsync(,);
+            var paquetes = await _unitOfWork.GetRepository<Paquete>().GetAllAsync();
 
             if (paquetes == null) return OperationResult.With<List<PaqueteDTO>>(default!);
 
